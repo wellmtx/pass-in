@@ -22,11 +22,15 @@ public class AttendeeService {
     private final AttendeeRepository attendeeRepository;
     private final CheckInService checkInService;
     private final AuthService authService;
+    private final AuthenticationManager authenticationManager;
 
     public AttendeeAuthResponseDTO authenticateAttendee(AttendeeAuthenticateDTO dto) {
         Attendee attendee = this.attendeeRepository.findByEmail(dto.email()).orElseThrow(
                 () -> new AttendeeNotFoundException("Attendee not found with email: " + dto.email())
         );
+
+        var authentication = new UsernamePasswordAuthenticationToken(attendee.getEmail(), "123");
+        this.authenticationManager.authenticate(authentication);
 
         String token = this.authService.generateJwtToken(attendee.getEmail());
 

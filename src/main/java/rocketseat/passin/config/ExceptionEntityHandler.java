@@ -10,6 +10,7 @@ import rocketseat.passin.domain.checkin.exceptions.CheckInAlreadyExistsException
 import rocketseat.passin.domain.event.exceptions.EventFullException;
 import rocketseat.passin.domain.event.exceptions.EventNotFoundException;
 import rocketseat.passin.dto.general.ErrorResponseDTO;
+import rocketseat.passin.exceptions.UnauthorizedException;
 
 @ControllerAdvice
 public class ExceptionEntityHandler {
@@ -36,5 +37,10 @@ public class ExceptionEntityHandler {
     @ExceptionHandler(CheckInAlreadyExistsException.class)
     public ResponseEntity handleCheckInAlreadyExists(CheckInAlreadyExistsException exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity handleUnauthorized(UnauthorizedException exception) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDTO(exception.getMessage()));
     }
 }

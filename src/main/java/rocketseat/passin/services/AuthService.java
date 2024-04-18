@@ -29,9 +29,20 @@ public class AuthService implements UserDetailsService {
     public String generateJwtToken(String email) {
         Algorithm algorithm = Algorithm.HMAC256("secret");
         return JWT.create()
+                .withIssuer("pass-in")
                 .withSubject(email)
                 .withExpiresAt(this.getExpirationTime())
                 .sign(algorithm);
+    }
+
+    public String validateJwtToken(String token) {
+        Algorithm algorithm = Algorithm.HMAC256("secret");
+
+        return JWT.require(algorithm)
+                .withIssuer("pass-in")
+                .build()
+                .verify(token)
+                .getSubject();
     }
 
     private Instant getExpirationTime() {
